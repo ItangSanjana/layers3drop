@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Install functions for layers3d.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function layers3drop_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    $library = libraries_detect('layers3d');
+    $error_type = isset($library['error']) ? drupal_ucfirst($library['error']) : '';
+    $error_message = isset($library['error message']) ? $library['error message'] : '';
+
+    if (empty($library['installed'])) {
+      $requirements['layers3d_library'] = array(
+        'title' => $t('layers3d plugin'),
+        'value' => $t('@e', array('@e' => $error_type)),
+        'description' => $t('!error You need to download the !layers3d, extract the archive and place the layers3d directory in the %path directory on your server.', array('!error' => $error_message, '!layers3d' => l($t('layers3d plugin'), $library['download url']), '%path' => 'sites/all/libraries')),
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+    else {
+      $requirements['layers3d_library'] = array(
+        'title' => $t('layers3d plugin'),
+        'value' => $library['version'],
+        'severity' => REQUIREMENT_OK,
+      );
+    }
+  }
+
+  return $requirements;
+}
