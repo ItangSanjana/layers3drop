@@ -1,4 +1,4 @@
-layersthreedrop
+layers3drop
 ===============
 
-Layers 3D: Premium Parallax and 'Out of the Image' effects! A Drupal module
+Layers 3D: Parallax and 'Out of the Image' effects! A Drupal module.
