@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * @file
+ * layers3d implementation.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function layers3drop_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#layers3drop':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Layers 3D: Premium Parallax and Out of the Image effects! For more information, see the online handbook entry for <a href="@layers3drop">layers3drop module</a>.', array('@layers3drop' => 'http://drupal.org/documentation/modules')) . '</p>';
+
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function layers3drop_permission() {
+  return array(
+    '_layers3drop_access' => array(
+      'title' => t('Administer Layers 3D'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function layers3drop_libraries_info() {
+  $libraries['layers3d'] = array(
+    'name' => 'layers3d plugin',
+    'vendor url' => 'http://kreaturamedia.com',
+    'download url' => 'http://kreaturamedia.com',
+    'version arguments' => array(
+      'file' => 'js/layers3d.kreaturamedia.jquery-min.js',
+      'pattern' => '@(?i:layers3d)\sv?([0-9\.a-z]+)@',
+      'lines' => 5,
+      'cols' => 80,
+    ),
+    'files' => array(
+      'js' => array(
+        'js/layers3d.kreaturamedia.jquery-min.js',
+      ),
+      'css' => array(
+        'css/layers3d.css',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implode strings.
+ */
+function _layers3drop_items_implode(array $items) {
+  return implode(PHP_EOL, $items);
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function layers3drop_preprocess_page(&$variables, $hook) {
+  $path = current_path();
+  $path_alias = drupal_lookup_path('alias', $path);
+  $patterns = array(
+    '<front>',
+  );
+  $pattern = _layers3drop_items_implode($patterns);
+
+  if (drupal_match_path($path, $pattern) || drupal_match_path($path_alias, $pattern)) {
+    _layers3drop_libraries_load();
+  }
+}
+
+/**
+ * Return _layers3drop_libraries_load().
+ */
+function _layers3drop_libraries_load() {
+  $library = libraries_detect('layers3d');
+
+  if (!empty($library['installed'])) {
+    libraries_load('layers3d');
+    _layers3drop_add_js();
+  }
+}
+
+/**
+ * Return _layers3drop_add_js().
+ */
+function _layers3drop_add_js() {
+  $library = libraries_load('layers3d');
+
+  if (!empty($library['loaded'])) {
+    $path = drupal_get_path('module', 'layers3drop');
+    drupal_add_js($path . '/layers3drop.js');
+    _layers3drop_add_css();
+  }
+}
+
+/**
+* Return _layers3drop_add_css().
+*/
+function _layers3drop_add_css() {
+  $path = drupal_get_path('module', 'layers3drop');
+  drupal_add_css($path . '/layers3drop.css');
+}

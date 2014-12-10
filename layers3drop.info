@@ -1,0 +1,6 @@
+name = layers3drop
+description = Premium Parallax and 'Out of the Image' effects!
+core = 7.x
+
+dependencies[] = jqmulti
+dependencies[] = html5_tools
